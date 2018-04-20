@@ -1,0 +1,2 @@
+* CatFacts Bot
+A Slack bot for informing people about cats.
