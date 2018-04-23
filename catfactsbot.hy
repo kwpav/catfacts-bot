@@ -9,21 +9,24 @@
 
 (defn random-fact []
   "Return a random fact from facts.txt"
-  (nth facts (randint 0 (- (len facts) 1))))
+  (nth facts (randint 0
+                      (- (len facts) 1))))
 
 ;; SLACK
-(setv key (.get os.environ "SLACK_BOT_TOKEN"))
-(setv slack (SlackClient key))
+(setv slack-key (.get os.environ "SLACK_BOT_TOKEN"))
+(setv slack (SlackClient slack-key))
+(setv slack-api-call slack.api_call)  ; make api_call look like a lisp functino
 
 (defn message-channel [channel text]
   "Send a message to a given channel"
-  (slack.api_call "chat.postMessage"
+  (slack-api-call "chat.postMessage"
                   :channel channel
                   :text text))
 
-(defn wait-time [i j]
+(defn make-wait-range [i j]
   "Set the range of the time to wait between messages, in minutes"
-  (list i j))
+  [i j])
+
 (setv wait-min first)
 (setv wait-max last)
 
@@ -36,13 +39,13 @@
   (sleep (randint (minutes (wait-min times))
                   (minutes (wait-max times)))))
 
-(setv wait-times (wait-time 1 2))
+(setv wait-range (make-wait-range 1 2))
 
 (defn start []
   "Start the bot"
   (message-channel "#general"
                    (random-fact))
-  (wait wait-times)
+  (wait wait-range)
   (start))
 
 (defmain [&rest args]
