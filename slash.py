@@ -8,6 +8,7 @@ verification_token = os.environ.get("VERIFICATION_TOKEN")
 app = Flask(__name__)
 
 
+# /catfacts
 @app.route('/slash', methods=['POST'])
 def slash():
     if request.form['token'] == verification_token:
