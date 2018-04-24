@@ -18,11 +18,12 @@
 (setv slack (SlackClient slack-key))
 (setv slack-api-call slack.api_call)  ; make api_call look like a lisp functino
 (setv rtm-read-delay 1)  ; 1 second delay when reading from RTM
-(setv mention-regex "^<@(|[WU].+?)>(.*)")  ; regex to look for @catfacts
 
-;; (defn read-slack-events [slack-events]
-;;   (for [event slack-events]))
 
+
+;; general - C9S02TBKR
+;; random - C9QBQ3BAM
+;; my id - U9RPGANMC
 (defn message-channel [channel text]
   "Send a message to a given channel"
   (slack-api-call "chat.postMessage"
@@ -32,14 +33,15 @@
 (defn slack-parse-channel [slack-events]
   "Parses list of events and sends a cat fact on direct mention"
   (for [event slack-events]
-    (if (and (= (get event "type") "message")
-             (direct-mention? (get event "text")))
+    (if (direct-mention? event)
         (message-channel (get event "channel")
                          (random-fact)))))
 
-(defn direct-mention? [message-text]
+(defn direct-mention? [event]
   "Determines if the user id is mentioned at the beginning of the message"
-  (re.search mention-regex message-text))
+  (setv mention-regex "^<@(|[WU].+?)>(.*)")  ; regex to look for @catfacts
+  (and (= (get event "type") "message")
+       (.search re mention-regex (get event "text"))))
 
 (defn make-wait-range [i j]
   "Set the range of the time to wait between messages, in minutes"
@@ -61,16 +63,21 @@
 
 (setv wait-range (make-wait-range 1 2))
 
+(setv subscribers ["U9RPGANMC"])
+
 (defn start []
   "Start the bot"
   ;; (message-channel "#general"
   ;;                  (random-fact))
   ;; (wait wait-range)
   ;; (start))
-  (if (slack.rtm_connect :with_team_state False)
-      (while slack.server.connected
-        (slack-parse-channel (slack.rtm_read)))
-        (sleep rtm-read-delay)
+  (if (.rtm_connect slack :with_team_state False)
+      (do
+        (for [user subscribers]
+          (message-channel user (random-fact)))
+        (while slack.server.connected
+          (slack-parse-channel (slack.rtm_read)))
+        (sleep rtm-read-delay))
       (print "Failed to connect")))
 
 (defmain [&rest args]
