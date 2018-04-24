@@ -3,12 +3,11 @@
 from flask import Flask, jsonify, request
 import os
 
-verification_token = os.environ.get("VERIFICATION_TOKEN")
+verification_token = os.environ["VERIFICATION_TOKEN"]
 
 app = Flask(__name__)
 
 
-# /catfacts
 @app.route('/slash', methods=['POST'])
 def slash():
     if request.form['token'] == verification_token:
