@@ -3,7 +3,7 @@
 from flask import Flask, jsonify, request
 import os
 
-verification_token = "L6XuJNxh4GuW8QzT4OhGBNVX"
+verification_token = os.environ.get("VERIFICATION_TOKEN")
 
 app = Flask(__name__)
 
