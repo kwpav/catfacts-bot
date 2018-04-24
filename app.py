@@ -13,10 +13,10 @@ app = Flask(__name__)
 @app.route('/catfacts', methods=['POST'])
 def slash():
     if request.form['token'] == verification_token:
-        payload = {'text': catfactsbot.random_fact()}
+        payload = {"response_type": "in_channel",
+                   'text': catfactsbot.random_fact()}
         return jsonify(payload)
 
 
 if __name__ == '__main__':
-    catfactsbot.start()
     app.run()
