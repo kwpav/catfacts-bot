@@ -19,3 +19,4 @@ def slash():
 
 if __name__ == '__main__':
     app.run()
+    catfactsbot.start()
