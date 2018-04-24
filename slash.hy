@@ -1,4 +1,5 @@
-(import [flask [Flask jsonify]]
+(import os
+        [flask [Flask jsonify]]
         [catfactsbot [random-fact]])
 
 (setv app (Flask __name__))
