@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 
 @app.route('/catfacts', methods=['POST'])
-def slash():
+def slash_catfacts():
     return slash.handle_slash(request.form["token"], verification_token)
 
 
